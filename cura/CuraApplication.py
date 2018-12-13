@@ -1261,7 +1261,6 @@ class CuraApplication(QtApplication):
     @pyqtSlot()
     def reloadAll(self):
         Logger.log("i", "Reloading all loaded mesh data.")
-        UM.View.GL.ShaderProgram.load()
         nodes = []
         has_merged_nodes = False
         for node in DepthFirstIterator(self.getController().getScene().getRoot()):

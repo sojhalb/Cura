@@ -142,7 +142,7 @@ geometry41core =
     vec4 toArc(vec4 vec) {
         //vec4 cyl_vertex = vec.xyzw;
         //cyl_vertex.x = 1.0;
-        vec4 cyl_vertex = vec4(vec.y * cos(vec.x / 10.0), vec.y * sin(vec.x / 10.0) , vec.z, vec.w);
+        vec4 cyl_vertex = vec4(vec.y * cos(vec.x / 31.0), vec.y * sin(vec.x / 31.0) , vec.z, vec.w);
         //vec4 cyl_vertex = vec4(vec.z * cos(vec.x / 10000.0), vec.w, vec.z * sin(vec.x / 10000.0), vec.y);
         return cyl_vertex;
     }
