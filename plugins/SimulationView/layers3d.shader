@@ -111,7 +111,7 @@ geometry41core =
     uniform int u_show_infill;
 
     layout(lines) in;
-    layout(triangle_strip, max_vertices = 26) out;
+    layout(triangle_strip, max_vertices = 255) out;
 
     in vec4 v_color[];
     in vec3 v_vertex[];
@@ -216,19 +216,20 @@ geometry41core =
             EndPrimitive();
         } else {
             //All normal lines are rendered as 3d tubes.
-            int nSegments = 4;
-            for (int i = 1; i <= nSegments + 2; i++)
+            // apx 1 segment per 20 degrees
+            int nSegments = max(int((abs(g_vertex_delta.x) + abs(g_vertex_delta.z)) / 3.6), 2);
+            //int nSegments = 5;
+            for (int i = 1; i <= nSegments; i++)
             {
+                float start_delta = (1.0/nSegments)*float(i-1);
                 float delta = (1.0/nSegments)*float(i);
                 vec3 arc_vertex[];
                 arc_vertex[0] = v_vertex[0].xyz;
                 arc_vertex[1] = v_vertex[1].xyz;
-                
-
 
                 vec4 arc_pos[];
-                arc_pos[1] = mix(gl_in[1].gl_Position, gl_in[0].gl_Position, delta);
-                arc_pos[0] = mix(gl_in[1].gl_Position, gl_in[0].gl_Position, delta - (1.0/nSegments));
+                arc_pos[1] = mix(gl_in[0].gl_Position, gl_in[1].gl_Position, delta);
+                arc_pos[0] = mix(gl_in[0].gl_Position, gl_in[1].gl_Position, start_delta);
                 vec4 arc_vertex_delta = arc_pos[1] - arc_pos[0];
                 vec3 arc_vertex_normal_horz = normalize(vec3(arc_vertex_delta.z, arc_vertex_delta.y, -arc_vertex_delta.x));
                 vec3 arc_vertex_normal_vert = arc_vertex_normal_horz;
