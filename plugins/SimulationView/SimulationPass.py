@@ -59,16 +59,16 @@ class SimulationPass(RenderPass):
         self._layer_shader = OpenGL.getInstance().createShaderProgram(os.path.join(PluginRegistry.getInstance().getPluginPath("SimulationView"), shader_filename))
 
     def render(self):
-        #if not self._layer_shader:
-        if self._compatibility_mode:
-            shader_filename = "layers.shader"
-            shadow_shader_filename = "layers_shadow.shader"
-        else:
-            shader_filename = "layers3d.shader"
-            shadow_shader_filename = "layers3d_shadow.shader"
-        self._layer_shader = OpenGL.getInstance().createShaderProgram(os.path.join(PluginRegistry.getInstance().getPluginPath("SimulationView"), shader_filename))
-        self._layer_shadow_shader = OpenGL.getInstance().createShaderProgram(os.path.join(PluginRegistry.getInstance().getPluginPath("SimulationView"), shadow_shader_filename))
-        self._current_shader = self._layer_shader
+        if not self._layer_shader:
+            if self._compatibility_mode:
+                shader_filename = "layers.shader"
+                shadow_shader_filename = "layers_shadow.shader"
+            else:
+                shader_filename = "layers3d.shader"
+                shadow_shader_filename = "layers3d_shadow.shader"
+            self._layer_shader = OpenGL.getInstance().createShaderProgram(os.path.join(PluginRegistry.getInstance().getPluginPath("SimulationView"), shader_filename))
+            self._layer_shadow_shader = OpenGL.getInstance().createShaderProgram(os.path.join(PluginRegistry.getInstance().getPluginPath("SimulationView"), shadow_shader_filename))
+            self._current_shader = self._layer_shader
         # Use extruder 0 if the extruder manager reports extruder index -1 (for single extrusion printers)
         self._layer_shader.setUniformValue("u_active_extruder", float(max(0, self._extruder_manager.activeExtruderIndex)))
         if self._layer_view:

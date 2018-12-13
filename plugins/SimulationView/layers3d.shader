@@ -140,7 +140,10 @@ geometry41core =
     // }
 
     vec4 toArc(vec4 vec) {
-        vec4 cyl_vertex = vec4(vec.z * cos(vec.x / 10000.0), vec.y, vec.z * sin(vec.x / 10000.0), vec.w);
+        //vec4 cyl_vertex = vec.xyzw;
+        //cyl_vertex.x = 1.0;
+        vec4 cyl_vertex = vec4(vec.y * cos(vec.x / 10.0), vec.y * sin(vec.x / 10.0) , vec.z, vec.w);
+        //vec4 cyl_vertex = vec4(vec.z * cos(vec.x / 10000.0), vec.w, vec.z * sin(vec.x / 10000.0), vec.y);
         return cyl_vertex;
     }
 
@@ -226,10 +229,21 @@ geometry41core =
                 arc_pos[1] = gl_in[1].gl_Position;
                 //arc_pos[1] = mix(gl_in[1].gl_Position, gl_in[0].gl_Position, delta - i/nSegments);
 
-                myEmitVertex(arc_vertex[0], vec4(1.0,1.0*delta,0.0, 1.0), -g_vertex_normal_horz, u_viewProjectionMatrix * (toArc(arc_pos[0])  - g_vertex_offset_horz) );
-                myEmitVertex(arc_vertex[1], vec4(1.0,1.0*delta,0.0, 1.0), -g_vertex_normal_horz, u_viewProjectionMatrix * (toArc(arc_pos[1]) - g_vertex_offset_horz) );
-                myEmitVertex(arc_vertex[0], v_color[0], g_vertex_normal_vert, u_viewProjectionMatrix * (toArc(arc_pos[0])  + g_vertex_offset_vert) );
-                myEmitVertex(arc_vertex[1], v_color[1], g_vertex_normal_vert, u_viewProjectionMatrix * (toArc(arc_pos[1]) + g_vertex_offset_vert) );
+                vec4 final_pos[];
+                final_pos[0] = u_viewProjectionMatrix * (toArc(arc_pos[0])  - g_vertex_offset_horz);
+                final_pos[1] = u_viewProjectionMatrix * (toArc(arc_pos[1]) - g_vertex_offset_horz);
+                final_pos[2] = u_viewProjectionMatrix * (toArc(arc_pos[0])  + g_vertex_offset_vert);
+                final_pos[3] = u_viewProjectionMatrix * (toArc(arc_pos[1]) + g_vertex_offset_vert);
+
+                final_pos[0] = u_viewProjectionMatrix * (toArc(arc_pos[0])  - g_vertex_offset_horz);
+                final_pos[1] = u_viewProjectionMatrix * (toArc(arc_pos[1]) - g_vertex_offset_horz);
+                final_pos[2] = u_viewProjectionMatrix * (toArc(arc_pos[0])  + g_vertex_offset_vert);
+                final_pos[3] = u_viewProjectionMatrix * (toArc(arc_pos[1]) + g_vertex_offset_vert);
+
+                myEmitVertex(arc_vertex[0], vec4(1.0,1.0*delta,0.0, 1.0), -g_vertex_normal_horz, final_pos[0] );
+                myEmitVertex(arc_vertex[1], vec4(1.0,1.0*delta,0.0, 1.0), -g_vertex_normal_horz, final_pos[1] );
+                myEmitVertex(arc_vertex[0], v_color[0], g_vertex_normal_vert, final_pos[2] );
+                myEmitVertex(arc_vertex[1], v_color[1], g_vertex_normal_vert,final_pos[3]  );
                 EndPrimitive();
             }
             // myEmitVertex(v_vertex[0], v_color[0], -g_vertex_normal_horz, u_viewProjectionMatrix * (gl_in[0].gl_Position - g_vertex_offset_horz));

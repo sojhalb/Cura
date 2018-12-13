@@ -237,6 +237,7 @@ class SimulationViewProxy(QObject):
     def _onActiveViewChanged(self):
         active_view = self._controller.getActiveView()
         if isinstance(active_view, SimulationView.SimulationView.SimulationView):
+            active_view.getSimulationPass().reloadShader()
             # remove other connection if once the SimulationView was created.
             if self.is_simulationView_selected:
                 active_view.currentLayerNumChanged.disconnect(self._onLayerChanged)
