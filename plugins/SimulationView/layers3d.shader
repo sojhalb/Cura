@@ -134,18 +134,10 @@ geometry41core =
         EmitVertex();
     }
 
-    // vec4 arcSeg(vec4 start, vec4 end, float delta)
-    // {
-
-    // }
-
     vec4 toArc(vec4 vec) {
-        float radius = 22.040; // move to a uniform
-        //vec4 cyl_vertex = vec.xyzw;
-        //cyl_vertex.x = 1.0;
+        float radius = 22.040; // todo move to a uniform
         vec4 cyl_vertex = vec4((vec.y + radius) * cos(vec.x / 10.0), (vec.y + radius) * sin(vec.x / 10.0) , vec.z, vec.w);
-        //vec4 cyl_vertex = vec4(vec.z * cos(vec.x / 10000.0), vec.w, vec.z * sin(vec.x / 10000.0), vec.y);
-        return cyl_vertex;
+         return cyl_vertex;
     }
 
     void main()
@@ -217,7 +209,8 @@ geometry41core =
         } else {
             //All normal lines are rendered as 3d tubes.
             // apx 1 segment per 20 degrees
-            int nSegments = max(int((abs(g_vertex_delta.x) + abs(g_vertex_delta.z)) / 3.6), 2);
+            float length = length(gl_in[1].gl_Position.xy - gl_in[0].gl_Position.xy);
+            int nSegments = max(int(length/2), 1); // slanted vs straight
             //int nSegments = 5;
             for (int i = 1; i <= nSegments; i++)
             {
@@ -231,8 +224,13 @@ geometry41core =
                 arc_pos[1] = mix(gl_in[0].gl_Position, gl_in[1].gl_Position, delta);
                 arc_pos[0] = mix(gl_in[0].gl_Position, gl_in[1].gl_Position, start_delta);
                 vec4 arc_vertex_delta = arc_pos[1] - arc_pos[0];
-                vec3 arc_vertex_normal_horz = normalize(vec3(arc_vertex_delta.z, arc_vertex_delta.y, -arc_vertex_delta.x));
-                vec3 arc_vertex_normal_vert = arc_vertex_normal_horz;
+
+
+                vec3 arc_vertex_normal_horz = normalize(vec3(g_vertex_delta.z, g_vertex_delta.y, -g_vertex_delta.x));
+                vec3 arc_vertex_normal_vert = normalize(vec3(g_vertex_delta.x, g_vertex_delta.z, -g_vertex_delta.y));// normalize(arc_vertex_delta.xyz);
+                // vec3 arc_vertex_normal_horz = normalize(cross(arc_vertex_delta.xyz, vec3(0,1,0)));
+                // vec3 arc_vertex_normal_vert = vec3(0,1,0);// normalize(arc_vertex_delta.xyz);
+
                 //arc_pos[0] = gl_in[0].gl_Position;
                 //arc_pos[1] = gl_in[1].gl_Position;
 
@@ -249,10 +247,10 @@ geometry41core =
                 final_pos[9] = u_viewProjectionMatrix * (toArc(arc_pos[1]) - g_vertex_offset_horz);
 
 
-                myEmitVertex(arc_vertex[0], vec4(1,0,1,1), -arc_vertex_normal_horz, final_pos[0] );
-                myEmitVertex(arc_vertex[1], vec4(1,0,1,1), -arc_vertex_normal_horz, final_pos[1] );
+                myEmitVertex(arc_vertex[0], v_color[0], -arc_vertex_normal_horz, final_pos[0] );
+                myEmitVertex(arc_vertex[1], v_color[1], -arc_vertex_normal_horz, final_pos[1] );
                 myEmitVertex(arc_vertex[0], v_color[0], arc_vertex_normal_vert, final_pos[2] );
-                myEmitVertex(arc_vertex[1], v_color[1], arc_vertex_normal_vert,final_pos[3]  );
+                myEmitVertex(arc_vertex[1], v_color[1], arc_vertex_normal_vert, final_pos[3]  );
 
                 myEmitVertex(v_vertex[0], v_color[0], arc_vertex_normal_horz, final_pos[4]);
                 myEmitVertex(v_vertex[1], v_color[1], arc_vertex_normal_horz, final_pos[5]);
