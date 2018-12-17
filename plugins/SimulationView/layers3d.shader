@@ -182,10 +182,13 @@ geometry41core =
         g_vertex_normal_horz_head = normalize(vec3(-g_vertex_delta.x, -g_vertex_delta.y, -g_vertex_delta.z));
         g_vertex_offset_horz_head = vec4(g_vertex_normal_horz_head * size_x, 0.0);
 
-        g_vertex_normal_horz = normalize(vec3(g_vertex_delta.z, g_vertex_delta.y, -g_vertex_delta.x));
+        //g_vertex_normal_horz = normalize(vec3(g_vertex_delta.z, g_vertex_delta.y, -g_vertex_delta.x));
+        //g_vertex_normal_horz = normalize(vec3(g_vertex_delta.z, -g_vertex_delta.y, g_vertex_delta.x));
 
-        g_vertex_offset_horz = vec4(g_vertex_normal_horz * size_x, 0.0); //size * g_vertex_normal_horz;
-        g_vertex_normal_vert = vec3(0.0, 1.0, 0.0);
+        g_vertex_normal_vert = normalize(cross(g_vertex_delta.xyz, vec3(0.0,0.0,1.0)));
+        g_vertex_normal_horz = normalize(cross(g_vertex_delta.xyz, g_vertex_normal_vert));
+
+        g_vertex_offset_horz = vec4(g_vertex_normal_horz * size_x, 0.0);//vec4(g_vertex_normal_horz * size_x, 0.0); //size * g_vertex_normal_horz;
         g_vertex_offset_vert = vec4(g_vertex_normal_vert * size_y, 0.0);
 
         if ((v_line_type[0] == 8) || (v_line_type[0] == 9)) {
@@ -225,9 +228,11 @@ geometry41core =
                 arc_pos[0] = mix(gl_in[0].gl_Position, gl_in[1].gl_Position, start_delta);
                 vec4 arc_vertex_delta = arc_pos[1] - arc_pos[0];
 
+                vec3 arc_vertex_normal_vert = normalize(cross(arc_vertex_delta.xzy, vec3(0.0,0.0,1.0)));
+                vec3 arc_vertex_normal_horz = normalize(cross(arc_vertex_delta.xzy, arc_vertex_normal_vert));
 
-                vec3 arc_vertex_normal_horz = normalize(vec3(g_vertex_delta.z, g_vertex_delta.y, -g_vertex_delta.x));
-                vec3 arc_vertex_normal_vert = normalize(vec3(g_vertex_delta.x, g_vertex_delta.z, -g_vertex_delta.y));// normalize(arc_vertex_delta.xyz);
+                vec4 arc_vertex_offset_horz = vec4(arc_vertex_normal_horz * size_x / 2, 0.0);//vec4(g_vertex_normal_horz * size_x, 0.0); //size * g_vertex_normal_horz;
+                vec4 arc_vertex_offset_vert = vec4(arc_vertex_normal_vert * size_y, 0.0);
                 // vec3 arc_vertex_normal_horz = normalize(cross(arc_vertex_delta.xyz, vec3(0,1,0)));
                 // vec3 arc_vertex_normal_vert = vec3(0,1,0);// normalize(arc_vertex_delta.xyz);
 
@@ -235,16 +240,16 @@ geometry41core =
                 //arc_pos[1] = gl_in[1].gl_Position;
 
                 vec4 final_pos[];
-                final_pos[0] = u_viewProjectionMatrix * (toArc(arc_pos[0])  - g_vertex_offset_horz);
-                final_pos[1] = u_viewProjectionMatrix * (toArc(arc_pos[1]) - g_vertex_offset_horz);
-                final_pos[2] = u_viewProjectionMatrix * (toArc(arc_pos[0])  + g_vertex_offset_vert);
-                final_pos[3] = u_viewProjectionMatrix * (toArc(arc_pos[1]) + g_vertex_offset_vert);
-                final_pos[4] = u_viewProjectionMatrix * (toArc(arc_pos[0]) + g_vertex_offset_horz);
-                final_pos[5] = u_viewProjectionMatrix * (toArc(arc_pos[1]) + g_vertex_offset_horz);
-                final_pos[6] = u_viewProjectionMatrix * (toArc(arc_pos[0])  - g_vertex_offset_vert);
-                final_pos[7] = u_viewProjectionMatrix * (toArc(arc_pos[1]) - g_vertex_offset_vert);
-                final_pos[8] = u_viewProjectionMatrix * (toArc(arc_pos[0]) - g_vertex_offset_horz);
-                final_pos[9] = u_viewProjectionMatrix * (toArc(arc_pos[1]) - g_vertex_offset_horz);
+                final_pos[0] = u_viewProjectionMatrix * (toArc(arc_pos[0])  - arc_vertex_offset_horz);
+                final_pos[1] = u_viewProjectionMatrix * (toArc(arc_pos[1]) - arc_vertex_offset_horz);
+                final_pos[2] = u_viewProjectionMatrix * (toArc(arc_pos[0])  + arc_vertex_offset_vert);
+                final_pos[3] = u_viewProjectionMatrix * (toArc(arc_pos[1]) + arc_vertex_offset_vert);
+                final_pos[4] = u_viewProjectionMatrix * (toArc(arc_pos[0]) + arc_vertex_offset_horz);
+                final_pos[5] = u_viewProjectionMatrix * (toArc(arc_pos[1]) + arc_vertex_offset_horz);
+                final_pos[6] = u_viewProjectionMatrix * (toArc(arc_pos[0])  - arc_vertex_offset_vert);
+                final_pos[7] = u_viewProjectionMatrix * (toArc(arc_pos[1]) - arc_vertex_offset_vert);
+                final_pos[8] = u_viewProjectionMatrix * (toArc(arc_pos[0]) - arc_vertex_offset_horz);
+                final_pos[9] = u_viewProjectionMatrix * (toArc(arc_pos[1]) - arc_vertex_offset_horz);
 
 
                 myEmitVertex(arc_vertex[0], v_color[0], -arc_vertex_normal_horz, final_pos[0] );
@@ -257,8 +262,8 @@ geometry41core =
                 myEmitVertex(v_vertex[0], v_color[0], -arc_vertex_normal_vert, final_pos[6]);
                 myEmitVertex(v_vertex[1], v_color[1], -arc_vertex_normal_vert, final_pos[7]);
 
-                //myEmitVertex(v_vertex[0], v_color[0], -arc_vertex_normal_horz, final_pos[8]);
-                //myEmitVertex(v_vertex[1], v_color[1], -arc_vertex_normal_horz, final_pos[9]);
+                myEmitVertex(v_vertex[0], v_color[0], -arc_vertex_normal_horz, final_pos[8]);
+                myEmitVertex(v_vertex[1], v_color[1], -arc_vertex_normal_horz, final_pos[9]);
                 
                 EndPrimitive();
             }
