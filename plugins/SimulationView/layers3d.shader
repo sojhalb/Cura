@@ -213,7 +213,7 @@ geometry41core =
             //All normal lines are rendered as 3d tubes.
             // apx 1 segment per 20 degrees
             float length = length(gl_in[1].gl_Position.xy - gl_in[0].gl_Position.xy);
-            int nSegments = max(int(length/2), 1); // slanted vs straight
+            int nSegments = max(int(length/3), 1); // slanted vs straight
             //int nSegments = 5;
             for (int i = 1; i <= nSegments; i++)
             {
@@ -228,42 +228,47 @@ geometry41core =
                 arc_pos[0] = mix(gl_in[0].gl_Position, gl_in[1].gl_Position, start_delta);
                 vec4 arc_vertex_delta = arc_pos[1] - arc_pos[0];
 
-                vec3 arc_vertex_normal_vert = normalize(cross(arc_vertex_delta.xzy, vec3(0.0,0.0,1.0)));
-                vec3 arc_vertex_normal_horz = normalize(cross(arc_vertex_delta.xzy, arc_vertex_normal_vert));
+                // arc_vertex_delta should be tangent to the drum surface, find the normal and bitangent
+                //vec3 arc_vertex_normal = normalize(cross(arc_vertex_delta.xzy, vec3(0.0,0.0,1.0)));
+                //vec3 arc_vertex_bitan = normalize(cross(arc_vertex_delta.yxz, arc_vertex_normal));
 
-                vec4 arc_vertex_offset_horz = vec4(arc_vertex_normal_horz * size_x / 2, 0.0);//vec4(g_vertex_normal_horz * size_x, 0.0); //size * g_vertex_normal_horz;
-                vec4 arc_vertex_offset_vert = vec4(arc_vertex_normal_vert * size_y, 0.0);
-                // vec3 arc_vertex_normal_horz = normalize(cross(arc_vertex_delta.xyz, vec3(0,1,0)));
-                // vec3 arc_vertex_normal_vert = vec3(0,1,0);// normalize(arc_vertex_delta.xyz);
+                vec3 arc_vertex_normal = normalize(cross(arc_vertex_delta.xyz, vec3(0.0,0.0,1.0)));
+                vec3 arc_vertex_bitan = normalize(cross(arc_vertex_delta.xyz, arc_vertex_normal));
+
+                //vec3 arc_vertex_normal = vec3(0,0,1);
+                //vec3 arc_vertex_bitan = vec3(0,1,0);
+
+
+                vec4 arc_vertex_offset_bitan = 2*vec4(arc_vertex_bitan * size_x, 0.0);
+                vec4 arc_vertex_offset_normal = 2*vec4(arc_vertex_normal * size_y, 0.0);
 
                 //arc_pos[0] = gl_in[0].gl_Position;
                 //arc_pos[1] = gl_in[1].gl_Position;
 
                 vec4 final_pos[];
-                final_pos[0] = u_viewProjectionMatrix * (toArc(arc_pos[0])  - arc_vertex_offset_horz);
-                final_pos[1] = u_viewProjectionMatrix * (toArc(arc_pos[1]) - arc_vertex_offset_horz);
-                final_pos[2] = u_viewProjectionMatrix * (toArc(arc_pos[0])  + arc_vertex_offset_vert);
-                final_pos[3] = u_viewProjectionMatrix * (toArc(arc_pos[1]) + arc_vertex_offset_vert);
-                final_pos[4] = u_viewProjectionMatrix * (toArc(arc_pos[0]) + arc_vertex_offset_horz);
-                final_pos[5] = u_viewProjectionMatrix * (toArc(arc_pos[1]) + arc_vertex_offset_horz);
-                final_pos[6] = u_viewProjectionMatrix * (toArc(arc_pos[0])  - arc_vertex_offset_vert);
-                final_pos[7] = u_viewProjectionMatrix * (toArc(arc_pos[1]) - arc_vertex_offset_vert);
-                final_pos[8] = u_viewProjectionMatrix * (toArc(arc_pos[0]) - arc_vertex_offset_horz);
-                final_pos[9] = u_viewProjectionMatrix * (toArc(arc_pos[1]) - arc_vertex_offset_horz);
+                final_pos[0] = u_viewProjectionMatrix * (toArc(arc_pos[0])  - arc_vertex_offset_bitan);
+                final_pos[1] = u_viewProjectionMatrix * (toArc(arc_pos[1]) - arc_vertex_offset_bitan);
+                final_pos[2] = u_viewProjectionMatrix * (toArc(arc_pos[0])  + arc_vertex_offset_normal);
+                final_pos[3] = u_viewProjectionMatrix * (toArc(arc_pos[1]) + arc_vertex_offset_normal);
+                final_pos[4] = u_viewProjectionMatrix * (toArc(arc_pos[0]) + arc_vertex_offset_bitan);
+                final_pos[5] = u_viewProjectionMatrix * (toArc(arc_pos[1]) + arc_vertex_offset_bitan);
+                final_pos[6] = u_viewProjectionMatrix * (toArc(arc_pos[0])  - arc_vertex_offset_normal);
+                final_pos[7] = u_viewProjectionMatrix * (toArc(arc_pos[1]) - arc_vertex_offset_normal);
+                final_pos[8] = u_viewProjectionMatrix * (toArc(arc_pos[0]) - arc_vertex_offset_bitan);
+                final_pos[9] = u_viewProjectionMatrix * (toArc(arc_pos[1]) - arc_vertex_offset_bitan);
 
+                myEmitVertex(arc_vertex[0], v_color[0], -arc_vertex_bitan, final_pos[0] );
+                myEmitVertex(arc_vertex[1], v_color[1], -arc_vertex_bitan, final_pos[1] );
+                myEmitVertex(arc_vertex[0], vec4(0,1,0,1), arc_vertex_normal, final_pos[2] );
+                myEmitVertex(arc_vertex[1], vec4(0,1,0,1), arc_vertex_normal, final_pos[3]  );
 
-                myEmitVertex(arc_vertex[0], v_color[0], -arc_vertex_normal_horz, final_pos[0] );
-                myEmitVertex(arc_vertex[1], v_color[1], -arc_vertex_normal_horz, final_pos[1] );
-                myEmitVertex(arc_vertex[0], v_color[0], arc_vertex_normal_vert, final_pos[2] );
-                myEmitVertex(arc_vertex[1], v_color[1], arc_vertex_normal_vert, final_pos[3]  );
+                myEmitVertex(v_vertex[0], vec4(1,0,0,1), arc_vertex_bitan, final_pos[4]);
+                myEmitVertex(v_vertex[1], vec4(1,0,0,1), arc_vertex_bitan, final_pos[5]);
+                myEmitVertex(v_vertex[0], v_color[0], -arc_vertex_normal, final_pos[6]);
+                myEmitVertex(v_vertex[1], v_color[1], -arc_vertex_normal, final_pos[7]);
 
-                myEmitVertex(v_vertex[0], v_color[0], arc_vertex_normal_horz, final_pos[4]);
-                myEmitVertex(v_vertex[1], v_color[1], arc_vertex_normal_horz, final_pos[5]);
-                myEmitVertex(v_vertex[0], v_color[0], -arc_vertex_normal_vert, final_pos[6]);
-                myEmitVertex(v_vertex[1], v_color[1], -arc_vertex_normal_vert, final_pos[7]);
-
-                myEmitVertex(v_vertex[0], v_color[0], -arc_vertex_normal_horz, final_pos[8]);
-                myEmitVertex(v_vertex[1], v_color[1], -arc_vertex_normal_horz, final_pos[9]);
+                myEmitVertex(v_vertex[0], v_color[0], -arc_vertex_bitan, final_pos[8]);
+                myEmitVertex(v_vertex[1], v_color[1], -arc_vertex_bitan, final_pos[9]);
                 
                 EndPrimitive();
             }
