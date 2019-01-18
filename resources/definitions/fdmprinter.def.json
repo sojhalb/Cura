@@ -5456,6 +5456,51 @@
             "description": "experimental!",
             "children":
             {
+                "cyl_slicing_enable":
+                {
+                    "label": "Cylindrical Slicing",
+                    "description": "Enable cylindrical slicing, highly unstable",
+                    "type": "bool",
+                    "default_value": false,
+                    "settable_per_mesh": false,
+                    "settable_per_extruder": false
+                },
+                "drum_coordinate_x":
+                {
+                    "label": "Drum Position X",
+                    "description": "Set the position of the drum in the x axis (across bed)",
+                    "unit": "mm",
+                    "type": "float",
+                    "minimum_value": "0",
+                    "default_value": 30,
+                    "enabled": "cyl_slicing_enable",
+                    "settable_per_mesh": false,
+                    "settable_per_extruder": false
+                },
+                "drum_coordinate_y":
+                {
+                    "label": "Drum Position Y",
+                    "description": "Set the position of the drum in the y axis (up from bed)",
+                    "unit": "mm",
+                    "type": "float",
+                    "minimum_value": "0",
+                    "default_value": 30,
+                    "enabled": "cyl_slicing_enable",
+                    "settable_per_mesh": false,
+                    "settable_per_extruder": false
+                },
+                "drum_radius":
+                {
+                    "label": "Drum Radius",
+                    "description": "Set the radius of the drum to use in cylindrical slicing",
+                    "unit": "mm",
+                    "type": "float",
+                    "minimum_value": "0",
+                    "default_value": 22.040,
+                    "enabled": "cyl_slicing_enable",
+                    "settable_per_mesh": false,
+                    "settable_per_extruder": false
+                },
                 "support_tree_enable":
                 {
                     "label": "Tree Support",

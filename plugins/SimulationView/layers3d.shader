@@ -223,9 +223,10 @@ geometry41core =
                 arc_vertex[0] = v_vertex[0].xyz;
                 arc_vertex[1] = v_vertex[1].xyz;
 
+                vec4 cyl_axis = vec4(0.0,0.0,0.0,0.0);
                 vec4 arc_pos[];
-                arc_pos[1] = mix(gl_in[0].gl_Position, gl_in[1].gl_Position, delta);
-                arc_pos[0] = mix(gl_in[0].gl_Position, gl_in[1].gl_Position, start_delta);
+                arc_pos[1] = mix(gl_in[0].gl_Position - cyl_axis, gl_in[1].gl_Position - cyl_axis, delta);
+                arc_pos[0] = mix(gl_in[0].gl_Position - cyl_axis, gl_in[1].gl_Position - cyl_axis, start_delta);
                 vec4 arc_vertex_delta = arc_pos[1] - arc_pos[0];
 
                 // arc_vertex_delta should be tangent to the drum surface, find the normal and bitangent
@@ -259,9 +260,11 @@ geometry41core =
 
                 myEmitVertex(arc_vertex[0], v_color[0], -arc_vertex_bitan, final_pos[0] );
                 myEmitVertex(arc_vertex[1], v_color[1], -arc_vertex_bitan, final_pos[1] );
+                //normal is green
                 myEmitVertex(arc_vertex[0], vec4(0,1,0,1), arc_vertex_normal, final_pos[2] );
                 myEmitVertex(arc_vertex[1], vec4(0,1,0,1), arc_vertex_normal, final_pos[3]  );
 
+                //bitangent is red
                 myEmitVertex(v_vertex[0], vec4(1,0,0,1), arc_vertex_bitan, final_pos[4]);
                 myEmitVertex(v_vertex[1], vec4(1,0,0,1), arc_vertex_bitan, final_pos[5]);
                 myEmitVertex(v_vertex[0], v_color[0], -arc_vertex_normal, final_pos[6]);
