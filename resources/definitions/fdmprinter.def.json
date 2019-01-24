@@ -5477,10 +5477,10 @@
                     "settable_per_mesh": false,
                     "settable_per_extruder": false
                 },
-                "drum_coordinate_y":
+                "drum_coordinate_z":
                 {
-                    "label": "Drum Position Y",
-                    "description": "Set the position of the drum in the y axis (up from bed)",
+                    "label": "Drum Position Z",
+                    "description": "Set the position of the drum in the z axis (up from bed)",
                     "unit": "mm",
                     "type": "float",
                     "minimum_value": "0",

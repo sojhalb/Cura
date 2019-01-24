@@ -10,7 +10,8 @@
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/cura_app.py",
-            "console": "integratedTerminal"
+            "args": ["--debug"],
+            "console": "integratedTerminal",
         },
     ]
 }
