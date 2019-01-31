@@ -240,11 +240,17 @@ geometry41core =
                 //vec3 arc_vertex_normal = normalize(cross(arc_vertex_delta.xyz, vec3(0,0,1)));
                 //vec3 arc_vertex_bitan = normalize(cross(arc_vertex_delta.xyz, arc_vertex_normal));
 
-                vec3 arc_vertex_normal = vec3(0,1,0);
-                vec3 arc_vertex_bitan = vec3(0,0,1);
+                float z_dir = 1;
+                if ( arc_vertex_delta.z > 0 )
+                    z_dir = -z_dir;
+                vec3 arc_vertex_normal = normalize(cross(arc_vertex_delta.xyz, vec3(0,0,1)) * z_dir);
+                vec3 arc_vertex_bitan = normalize(cross(arc_vertex_normal, arc_vertex_delta.xyz) * z_dir);
+                // the original swizzle only horz normal does some interesting stuff
+                //vec3(arc_vertex_delta.z, arc_vertex_delta.y, arc_vertex_delta.x) * z_dir;
+
                 
-                vec4 arc_vertex_offset_normal = normalize(vec4( cross(arc_vertex_delta.xyz, vec3(0,0,1)), 0)) * size_y;
-                vec4 arc_vertex_offset_bitan = normalize(vec4(cross(arc_vertex_offset_normal.xyz, arc_vertex_delta.xyz),0.0)) * size_x;
+                vec4 arc_vertex_offset_normal = normalize(vec4( arc_vertex_normal, 0)) * size_y;
+                vec4 arc_vertex_offset_bitan = normalize(vec4(arc_vertex_bitan,0.0)) * size_x;
 
                 vec4 final_pos[];
                 final_pos[0] = u_viewProjectionMatrix * (arc_pos[0] - arc_vertex_offset_bitan );
@@ -259,21 +265,25 @@ geometry41core =
                 final_pos[8] = u_viewProjectionMatrix * (arc_pos[0] - arc_vertex_offset_bitan);
                 final_pos[9] = u_viewProjectionMatrix * (arc_pos[1] - arc_vertex_offset_bitan);
 
-                myEmitVertex(arc_vertex[0], v_color[0], arc_vertex_bitan, final_pos[0] );
-                myEmitVertex(arc_vertex[1], v_color[1], arc_vertex_bitan, final_pos[1] );
+                //left side
+                myEmitVertex(arc_vertex[0], v_color[0], -arc_vertex_bitan, final_pos[0] );
+                myEmitVertex(arc_vertex[1], v_color[1], -arc_vertex_bitan, final_pos[1] );
 
-                //normal is green
-                myEmitVertex(arc_vertex[0], vec4(0,1,0,1), arc_vertex_normal, final_pos[2] );
-                myEmitVertex(arc_vertex[1], vec4(0,1,0,1), arc_vertex_normal, final_pos[3]  );
+                //normal is green, top side
+                myEmitVertex(arc_vertex[0], v_color[0], arc_vertex_normal, final_pos[2] );
+                myEmitVertex(arc_vertex[1], v_color[0], arc_vertex_normal, final_pos[3]  );
 
-                //bitangent is red
-                myEmitVertex(v_vertex[0], vec4(1,0,0,1), arc_vertex_bitan, final_pos[4]);
-                myEmitVertex(v_vertex[1], vec4(1,0,0,1), arc_vertex_bitan, final_pos[5]);
-                myEmitVertex(v_vertex[0], v_color[0], arc_vertex_normal, final_pos[6]);
-                myEmitVertex(v_vertex[1], v_color[1], arc_vertex_normal, final_pos[7]);
+                //bitangent is red, right side
+                myEmitVertex(arc_vertex[0], v_color[0], arc_vertex_bitan, final_pos[4]);
+                myEmitVertex(arc_vertex[1], v_color[0], arc_vertex_bitan, final_pos[5]);
 
-                myEmitVertex(v_vertex[0], v_color[0], arc_vertex_bitan, final_pos[8]);
-                myEmitVertex(v_vertex[1], v_color[1], arc_vertex_bitan, final_pos[9]);
+                //bottom
+                myEmitVertex(arc_vertex[0], v_color[0], -arc_vertex_normal, final_pos[6]);
+                myEmitVertex(arc_vertex[1], v_color[1], -arc_vertex_normal, final_pos[7]);
+
+                //close the shape (left side again)
+                myEmitVertex(arc_vertex[0], v_color[0], -arc_vertex_bitan, final_pos[8]);
+                myEmitVertex(arc_vertex[1], v_color[1], -arc_vertex_bitan, final_pos[9]);
                 
                 EndPrimitive();
             }
