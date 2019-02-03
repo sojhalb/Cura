@@ -1,14 +1,14 @@
 {
     "version": 2,
-    "name": "Prusa i3 Mk2",
+    "name": "Cylindrical Zaribo",
     "inherits": "fdmprinter",
     "metadata": {
         "visible": true,
         "author": "laetic",
-        "manufacturer": "Prusa Research",
+        "manufacturer": "Additive Lathe Project",
         "file_formats": "text/x-gcode",
         "icon": "icon_ultimaker2",
-        "platform": "prusai3_platform.stl",
+        "platform": "cylindrical_zaribo_bed0.stl",
         "has_materials": true,
         "machine_extruder_trains":
         {
@@ -17,7 +17,7 @@
     },
 
     "overrides": {
-        "machine_name": { "default_value": "Prusa i3 Mk2" },
+        "machine_name": { "default_value": "Cylindrical Zaribo" },
         "machine_heated_bed": { "default_value": false },
         "machine_width": { "default_value": 250 },
         "machine_height": { "default_value": 200 },

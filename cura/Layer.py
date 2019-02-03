@@ -1,4 +1,5 @@
 from UM.Mesh.MeshBuilder import MeshBuilder
+from UM.Logger import Logger
 
 import numpy
 
@@ -51,6 +52,7 @@ class Layer:
         result_vertex_offset = vertex_offset
         result_index_offset = index_offset
         self._element_count = 0
+        #Logger.log("d", "test%s", y for x in vertices for y in x)
         for polygon in self._polygons:
             polygon.build(result_vertex_offset, result_index_offset, vertices, colors, line_dimensions, feedrates, extruders, line_types, indices)
             result_vertex_offset += polygon.lineMeshVertexCount()
