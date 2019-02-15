@@ -135,7 +135,7 @@ geometry41core =
     }
 
     vec4 toArc(vec4 vec) {
-        float radius = 22.040; // todo move to a uniform
+        float radius = 12.70; // todo move to a uniform
         vec4 cyl_vertex = vec4((vec.y + radius) * cos(vec.x / 10.0), (vec.y + radius) * sin(vec.x / 10.0) , vec.z, vec.w);
          return cyl_vertex;
     }
@@ -231,7 +231,7 @@ geometry41core =
                 vec4 arc_vertex_delta = arc_pos[1] - arc_pos[0];
 
                 // size_x still expects a linear mm distance, but it has to be converted into drum surface distance
-                size_x = (v_line_dim[1].x * (10 / (gl_in[0].gl_Position.y + 22.040)) / 2) + 0.01;
+                size_x = (v_line_dim[1].x * (10 / (gl_in[0].gl_Position.y + 12.70)) / 2) + 0.01;
 
                 // arc_vertex_delta should be tangent to the drum surface, find the normal and bitangent
                 //vec3 arc_vertex_normal = normalize(cross(arc_vertex_delta.xzy, vec3(0.0,0.0,1.0)));
