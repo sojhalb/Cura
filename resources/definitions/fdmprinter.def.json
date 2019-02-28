@@ -5501,6 +5501,52 @@
                     "settable_per_mesh": false,
                     "settable_per_extruder": false
                 },
+                "seam_front":
+                {
+                    "label": "Seam front",
+                    "description": "Set the radius of the drum to use in cylindrical slicing",
+                    "unit": "um",
+                    "type": "float",
+                    "minimum_value": "0",
+                    "default_value": 15707,
+                    "enabled": "cyl_slicing_enable",
+                    "settable_per_mesh": false,
+                    "settable_per_extruder": false
+                },
+                "seam_back":
+                {
+                    "label": "Seam Back",
+                    "description": "Set the radius of the drum to use in cylindrical slicing",
+                    "unit": "um",
+                    "type": "float",
+                    "minimum_value": "0",
+                    "default_value": 47123,
+                    "enabled": "cyl_slicing_enable",
+                    "settable_per_mesh": false,
+                    "settable_per_extruder": false
+                },
+                "fiber_cut_length":
+                {
+                    "label": "Fiber Cut Length",
+                    "description": "Set the length before the end of a line to cut the fiber",
+                    "unit": "mm",
+                    "type": "float",
+                    "minimum_value": "0",
+                    "default_value": 10.00,
+                    "settable_per_mesh": false,
+                    "settable_per_extruder": false
+                },
+                "fiber_cut_travel_threshold":
+                {
+                    "label": "Fiber Cut Travel Threshold",
+                    "description": "Set the minimum length of a travel that requires a fiber cut",
+                    "unit": "mm",
+                    "type": "float",
+                    "minimum_value": "0",
+                    "default_value": 2.00,
+                    "settable_per_mesh": false,
+                    "settable_per_extruder": false
+                },
                 "support_tree_enable":
                 {
                     "label": "Tree Support",
