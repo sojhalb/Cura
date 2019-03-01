@@ -5525,6 +5525,17 @@
                     "settable_per_mesh": false,
                     "settable_per_extruder": false
                 },
+                "fiber_enable":
+                {
+                    "label": "Fiber Enabled",
+                    "description": "Add geometry and cut commands to this print",
+                    "unit": "mm",
+                    "type": "float",
+                    "minimum_value": "0",
+                    "default_value": 10.00,
+                    "settable_per_mesh": false,
+                    "settable_per_extruder": false
+                },
                 "fiber_cut_length":
                 {
                     "label": "Fiber Cut Length",
@@ -5533,6 +5544,7 @@
                     "type": "float",
                     "minimum_value": "0",
                     "default_value": 10.00,
+                    "enabled": "fiber_enable",
                     "settable_per_mesh": false,
                     "settable_per_extruder": false
                 },
@@ -5544,6 +5556,7 @@
                     "type": "float",
                     "minimum_value": "0",
                     "default_value": 2.00,
+                    "enabled": "fiber_enable",
                     "settable_per_mesh": false,
                     "settable_per_extruder": false
                 },
