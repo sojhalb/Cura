@@ -245,7 +245,7 @@ class FlavorParser:
                     continue
                 if item.startswith(";"):
                     continue
-                if item[0] == "X":
+                if item[0] == "X" or item[0] == "B":
                     x = float(item[1:])
                 if item[0] == "Y":
                     y = float(item[1:])
