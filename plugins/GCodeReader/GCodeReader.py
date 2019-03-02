@@ -8,6 +8,7 @@ from UM.Application import Application
 from UM.MimeTypeDatabase import MimeTypeDatabase, MimeType
 
 catalog = i18nCatalog("cura")
+from importlib import reload  # Python 3.4+ only.
 from . import MarlinFlavorParser, RepRapFlavorParser
 
 

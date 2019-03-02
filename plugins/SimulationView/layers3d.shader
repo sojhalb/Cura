@@ -213,7 +213,7 @@ geometry41core =
             //All normal lines are rendered as 3d tubes.
             // apx 1 segment per 20 degrees
             float length = length(gl_in[1].gl_Position.xy - gl_in[0].gl_Position.xy);
-            int nSegments = max(int(length/3), 1); // slanted vs straight
+            int nSegments = max(int(length/1), 1); // slanted vs straight
             //int nSegments = 5;
             for (int i = 1; i <= nSegments; i++)
             {

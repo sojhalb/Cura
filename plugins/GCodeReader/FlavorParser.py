@@ -108,7 +108,7 @@ class FlavorParser:
             this_layer = self._layer_data_builder.getLayer(self._layer_number)
         except ValueError:
             return False
-        count = len(path)
+        count = len(path) * 2
         line_types = numpy.empty((count - 1, 1), numpy.int32)
         line_widths = numpy.empty((count - 1, 1), numpy.float32)
         line_thicknesses = numpy.empty((count - 1, 1), numpy.float32)
@@ -120,22 +120,25 @@ class FlavorParser:
         i = 0
 
         # add the first point right away
-        points[i, :] = [point[0] + extruder_offsets[0], point[2], -point[1] - extruder_offsets[1]]
-        extrusion_values[i] = point[4]
+        first_point = path[0]
+        points[i, :] = [first_point[0] + extruder_offsets[0], first_point[2], -first_point[1] - extruder_offsets[1]]
+        extrusion_values[i] = first_point[4]
         i += 1
 
 
         for point, next_pt in zip(path, path[1:]):
             dist = next_pt[0] - point[0] # dist in X decitheta
             # todo calculate segments from dist
-            segments = 1
+            segments = 2
+            #count += 1
+            #numpy.resize(points,(count,3)) # horrible but should work
             for seg in range(1, segments + 1): # zero based indexing not that nice for division
                 frac = seg/segments
                 x = (((next_pt[0] + extruder_offsets[0]) - (point[0] + extruder_offsets[0])) * frac) + (point[0] + extruder_offsets[0])
-                y = ((next_pt[2] - point[2]) / frac) + point[2]
-                z = (((-next_pt[1] - extruder_offsets[1]) - (-point[1] - extruder_offsets[1])) * frac) + (-point[1] - extruder_offsets[0])
+                y = ((next_pt[2] - point[2]) * frac) + point[2]
+                z = (((-next_pt[1] - extruder_offsets[1]) - (-point[1] - extruder_offsets[1])) * frac) + (-point[1] - extruder_offsets[1])
                 points[i, :] = [x, y, z]
-                extrusion_values[i] = next_pt[4]
+                extrusion_values[i] = ((next_pt[4] - point[4]) * frac) + point[4]
                 if i > 0:
                     line_feedrates[i - 1] = next_pt[3]
                     line_types[i - 1] = next_pt[5]
