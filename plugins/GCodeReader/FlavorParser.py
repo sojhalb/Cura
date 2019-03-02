@@ -108,7 +108,18 @@ class FlavorParser:
             this_layer = self._layer_data_builder.getLayer(self._layer_number)
         except ValueError:
             return False
-        count = len(path) * 2
+
+        count = 1
+        #count has to be calculated ahead of initialization
+        segment_arc_length = 10 # 1 radians
+        for point, next_pt in zip(path, path[1:]):
+            dist = abs(next_pt[0] - point[0]) # dist in X deciradians
+            if round(dist / segment_arc_length) > 0:
+                count += round(dist / segment_arc_length)
+            else:
+                count += 1
+            
+
         line_types = numpy.empty((count - 1, 1), numpy.int32)
         line_widths = numpy.empty((count - 1, 1), numpy.float32)
         line_thicknesses = numpy.empty((count - 1, 1), numpy.float32)
@@ -127,11 +138,11 @@ class FlavorParser:
 
 
         for point, next_pt in zip(path, path[1:]):
-            dist = next_pt[0] - point[0] # dist in X decitheta
-            # todo calculate segments from dist
-            segments = 2
-            #count += 1
-            #numpy.resize(points,(count,3)) # horrible but should work
+            dist = abs(next_pt[0] - point[0]) # dist in X decitheta
+            if round(dist / segment_arc_length) > 0:
+                segments = round(dist / segment_arc_length)
+            else:
+                segments = 1
             for seg in range(1, segments + 1): # zero based indexing not that nice for division
                 frac = seg/segments
                 x = (((next_pt[0] + extruder_offsets[0]) - (point[0] + extruder_offsets[0])) * frac) + (point[0] + extruder_offsets[0])
