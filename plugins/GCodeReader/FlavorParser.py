@@ -135,10 +135,10 @@ class FlavorParser:
                 y = ((next_pt[2] - point[2]) / frac) + point[2]
                 z = (((-next_pt[1] - extruder_offsets[1]) - (-point[1] - extruder_offsets[1])) * frac) + (-point[1] - extruder_offsets[0])
                 points[i, :] = [x, y, z]
-                extrusion_values[i] = point[4]
+                extrusion_values[i] = next_pt[4]
                 if i > 0:
-                    line_feedrates[i - 1] = point[3]
-                    line_types[i - 1] = point[5]
+                    line_feedrates[i - 1] = next_pt[3]
+                    line_types[i - 1] = next_pt[5]
                     if point[5] in [LayerPolygon.MoveCombingType, LayerPolygon.MoveRetractionType]:
                         line_widths[i - 1] = 0.1
                         line_thicknesses[i - 1] = 0.0 # Travels are set as zero thickness lines
