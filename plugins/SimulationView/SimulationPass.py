@@ -190,11 +190,11 @@ class SimulationPass(RenderPass):
         # but the user is not using the layer slider, and the compatibility mode is not enabled
         if not self._switching_layers and not self._compatibility_mode and self._layer_view.getActivity() and nozzle_node is not None:
             if head_position is not None:
-                nozzle_node.setVisible(True)
-                nozzle_node.setPosition(head_position)
-                nozzle_batch = RenderBatch(self._nozzle_shader, type = RenderBatch.RenderType.Transparent)
-                nozzle_batch.addItem(nozzle_node.getWorldTransformation(), mesh = nozzle_node.getMeshData())
-                nozzle_batch.render(self._scene.getActiveCamera())
+                nozzle_node.setVisible(False)
+                # nozzle_node.setPosition(head_position)
+                # nozzle_batch = RenderBatch(self._nozzle_shader, type = RenderBatch.RenderType.Transparent)
+                # nozzle_batch.addItem(nozzle_node.getWorldTransformation(), mesh = nozzle_node.getMeshData())
+                # nozzle_batch.render(self._scene.getActiveCamera())
 
         # Render toolhandles on top of the layerview
         if len(tool_handle_batch.items) > 0:
