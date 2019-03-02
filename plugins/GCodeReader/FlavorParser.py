@@ -118,18 +118,33 @@ class FlavorParser:
         points = numpy.empty((count, 3), numpy.float32)
         extrusion_values = numpy.empty((count, 1), numpy.float32)
         i = 0
-        for point in path:
-            points[i, :] = [point[0] + extruder_offsets[0], point[2], -point[1] - extruder_offsets[1]]
-            extrusion_values[i] = point[4]
-            if i > 0:
-                line_feedrates[i - 1] = point[3]
-                line_types[i - 1] = point[5]
-                if point[5] in [LayerPolygon.MoveCombingType, LayerPolygon.MoveRetractionType]:
-                    line_widths[i - 1] = 0.1
-                    line_thicknesses[i - 1] = 0.0 # Travels are set as zero thickness lines
-                else:
-                    line_widths[i - 1] = self._calculateLineWidth(points[i], points[i-1], extrusion_values[i], extrusion_values[i-1], layer_thickness)
-            i += 1
+
+        # add the first point right away
+        points[i, :] = [point[0] + extruder_offsets[0], point[2], -point[1] - extruder_offsets[1]]
+        extrusion_values[i] = point[4]
+        i += 1
+
+
+        for point, next_pt in zip(path, path[1:]):
+            dist = next_pt[0] - point[0] # dist in X decitheta
+            # todo calculate segments from dist
+            segments = 1
+            for seg in range(1, segments + 1): # zero based indexing not that nice for division
+                frac = seg/segments
+                x = (((next_pt[0] + extruder_offsets[0]) - (point[0] + extruder_offsets[0])) * frac) + (point[0] + extruder_offsets[0])
+                y = ((next_pt[2] - point[2]) / frac) + point[2]
+                z = (((-next_pt[1] - extruder_offsets[1]) - (-point[1] - extruder_offsets[1])) * frac) + (-point[1] - extruder_offsets[0])
+                points[i, :] = [x, y, z]
+                extrusion_values[i] = point[4]
+                if i > 0:
+                    line_feedrates[i - 1] = point[3]
+                    line_types[i - 1] = point[5]
+                    if point[5] in [LayerPolygon.MoveCombingType, LayerPolygon.MoveRetractionType]:
+                        line_widths[i - 1] = 0.1
+                        line_thicknesses[i - 1] = 0.0 # Travels are set as zero thickness lines
+                    else:
+                        line_widths[i - 1] = self._calculateLineWidth(points[i], points[i-1], extrusion_values[i], extrusion_values[i-1], layer_thickness)
+                i += 1
 
         this_poly = LayerPolygon(self._extruder_number, line_types, points, line_widths, line_thicknesses, line_feedrates)
         this_poly.buildCache()
