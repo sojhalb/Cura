@@ -5456,7 +5456,7 @@
             "description": "experimental!",
             "children":
             {
-                "cyl_slicing_enable":
+                "cyl_slicing_enabled":
                 {
                     "label": "Cylindrical Slicing",
                     "description": "Enable cylindrical slicing, highly unstable",
@@ -5473,7 +5473,7 @@
                     "type": "float",
                     "minimum_value": "0",
                     "default_value": 30,
-                    "enabled": "cyl_slicing_enable",
+                    "enabled": "cyl_slicing_enabled",
                     "settable_per_mesh": false,
                     "settable_per_extruder": false
                 },
@@ -5485,7 +5485,7 @@
                     "type": "float",
                     "minimum_value": "0",
                     "default_value": 30,
-                    "enabled": "cyl_slicing_enable",
+                    "enabled": "cyl_slicing_enabled",
                     "settable_per_mesh": false,
                     "settable_per_extruder": false
                 },
@@ -5497,7 +5497,7 @@
                     "type": "float",
                     "minimum_value": "0",
                     "default_value": 22.040,
-                    "enabled": "cyl_slicing_enable",
+                    "enabled": "cyl_slicing_enabled",
                     "settable_per_mesh": false,
                     "settable_per_extruder": false
                 },
@@ -5509,7 +5509,7 @@
                     "type": "float",
                     "minimum_value": "0",
                     "default_value": 15707,
-                    "enabled": "cyl_slicing_enable",
+                    "enabled": "cyl_slicing_enabled",
                     "settable_per_mesh": false,
                     "settable_per_extruder": false
                 },
@@ -5521,18 +5521,26 @@
                     "type": "float",
                     "minimum_value": "0",
                     "default_value": 47123,
-                    "enabled": "cyl_slicing_enable",
+                    "enabled": "cyl_slicing_enabled",
                     "settable_per_mesh": false,
                     "settable_per_extruder": false
                 },
-                "fiber_enable":
+                "cyl_skin_density_enabled":
                 {
-                    "label": "Fiber Enabled",
+                    "label": "Cylindrical Skin Density Compensation",
+                    "description": "Adjusts skin density according to height",
+                    "type": "bool",
+                    "default_value": false,
+                    "enabled": "cyl_slicing_enabled",
+                    "settable_per_mesh": false,
+                    "settable_per_extruder": false
+                },
+                "fiber_cut_enabled":
+                {
+                    "label": "Fiber Cuts Enabled",
                     "description": "Add geometry and cut commands to this print",
-                    "unit": "mm",
-                    "type": "float",
-                    "minimum_value": "0",
-                    "default_value": 10.00,
+                    "type": "bool",
+                    "default_value": false,
                     "settable_per_mesh": false,
                     "settable_per_extruder": false
                 },
@@ -5544,7 +5552,7 @@
                     "type": "float",
                     "minimum_value": "0",
                     "default_value": 10.00,
-                    "enabled": "fiber_enable",
+                    "enabled": "fiber_cut_enabled",
                     "settable_per_mesh": false,
                     "settable_per_extruder": false
                 },
@@ -5556,7 +5564,7 @@
                     "type": "float",
                     "minimum_value": "0",
                     "default_value": 2.00,
-                    "enabled": "fiber_enable",
+                    "enabled": "fiber_cut_enabled",
                     "settable_per_mesh": false,
                     "settable_per_extruder": false
                 },
