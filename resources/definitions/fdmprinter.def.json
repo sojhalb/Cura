@@ -5508,7 +5508,7 @@
                     "unit": "um",
                     "type": "float",
                     "minimum_value": "0",
-                    "default_value": 15707,
+                    "default_value": 16907,
                     "enabled": "cyl_slicing_enabled",
                     "settable_per_mesh": false,
                     "settable_per_extruder": false
@@ -5520,7 +5520,7 @@
                     "unit": "um",
                     "type": "float",
                     "minimum_value": "0",
-                    "default_value": 47123,
+                    "default_value": 46123,
                     "enabled": "cyl_slicing_enabled",
                     "settable_per_mesh": false,
                     "settable_per_extruder": false
