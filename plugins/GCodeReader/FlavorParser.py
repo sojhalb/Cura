@@ -153,7 +153,7 @@ class FlavorParser:
                 if i > 0:
                     line_feedrates[i - 1] = next_pt[3]
                     line_types[i - 1] = next_pt[5]
-                    if point[5] in [LayerPolygon.MoveCombingType, LayerPolygon.MoveRetractionType]:
+                    if next_pt[5] in [LayerPolygon.MoveCombingType, LayerPolygon.MoveRetractionType]:
                         line_widths[i - 1] = 0.1
                         line_thicknesses[i - 1] = 0.0 # Travels are set as zero thickness lines
                     else:
