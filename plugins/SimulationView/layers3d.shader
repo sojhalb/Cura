@@ -193,20 +193,98 @@ geometry41core =
 
         if ((v_line_type[0] == 8) || (v_line_type[0] == 9)) {
             // Travels: flat plane with pointy ends
-            myEmitVertex(v_vertex[0], v_color[0], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[0].gl_Position + g_vertex_offset_horz + g_vertex_offset_vert));
-            myEmitVertex(v_vertex[0], v_color[0], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[0].gl_Position + g_vertex_offset_horz_head + g_vertex_offset_vert));
-            myEmitVertex(v_vertex[0], v_color[0], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[0].gl_Position - g_vertex_offset_horz + g_vertex_offset_vert));
-            myEmitVertex(v_vertex[0], v_color[0], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[0].gl_Position + g_vertex_offset_horz + g_vertex_offset_vert));
-            myEmitVertex(v_vertex[1], v_color[1], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[1].gl_Position - g_vertex_offset_horz + g_vertex_offset_vert));
-            myEmitVertex(v_vertex[1], v_color[1], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[1].gl_Position + g_vertex_offset_horz + g_vertex_offset_vert));
-            myEmitVertex(v_vertex[1], v_color[1], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[1].gl_Position - g_vertex_offset_horz_head + g_vertex_offset_vert));
-            //And reverse so that the line is also visible from the back side.
-            myEmitVertex(v_vertex[1], v_color[1], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[1].gl_Position + g_vertex_offset_horz + g_vertex_offset_vert));
-            myEmitVertex(v_vertex[1], v_color[1], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[1].gl_Position - g_vertex_offset_horz + g_vertex_offset_vert));
-            myEmitVertex(v_vertex[0], v_color[0], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[0].gl_Position + g_vertex_offset_horz + g_vertex_offset_vert));
-            myEmitVertex(v_vertex[0], v_color[0], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[0].gl_Position - g_vertex_offset_horz + g_vertex_offset_vert));
-            myEmitVertex(v_vertex[0], v_color[0], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[0].gl_Position + g_vertex_offset_horz_head + g_vertex_offset_vert));
-            myEmitVertex(v_vertex[0], v_color[0], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[0].gl_Position + g_vertex_offset_horz + g_vertex_offset_vert));
+            // myEmitVertex(v_vertex[0], v_color[0], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[0].gl_Position + g_vertex_offset_horz + g_vertex_offset_vert));
+            // myEmitVertex(v_vertex[0], v_color[0], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[0].gl_Position + g_vertex_offset_horz_head + g_vertex_offset_vert));
+            // myEmitVertex(v_vertex[0], v_color[0], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[0].gl_Position - g_vertex_offset_horz + g_vertex_offset_vert));
+            // myEmitVertex(v_vertex[0], v_color[0], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[0].gl_Position + g_vertex_offset_horz + g_vertex_offset_vert));
+            // myEmitVertex(v_vertex[1], v_color[1], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[1].gl_Position - g_vertex_offset_horz + g_vertex_offset_vert));
+            // myEmitVertex(v_vertex[1], v_color[1], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[1].gl_Position + g_vertex_offset_horz + g_vertex_offset_vert));
+            // myEmitVertex(v_vertex[1], v_color[1], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[1].gl_Position - g_vertex_offset_horz_head + g_vertex_offset_vert));
+            // //And reverse so that the line is also visible from the back side.
+            // myEmitVertex(v_vertex[1], v_color[1], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[1].gl_Position + g_vertex_offset_horz + g_vertex_offset_vert));
+            // myEmitVertex(v_vertex[1], v_color[1], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[1].gl_Position - g_vertex_offset_horz + g_vertex_offset_vert));
+            // myEmitVertex(v_vertex[0], v_color[0], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[0].gl_Position + g_vertex_offset_horz + g_vertex_offset_vert));
+            // myEmitVertex(v_vertex[0], v_color[0], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[0].gl_Position - g_vertex_offset_horz + g_vertex_offset_vert));
+            // myEmitVertex(v_vertex[0], v_color[0], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[0].gl_Position + g_vertex_offset_horz_head + g_vertex_offset_vert));
+            // myEmitVertex(v_vertex[0], v_color[0], g_vertex_normal_vert, u_viewProjectionMatrix * (gl_in[0].gl_Position + g_vertex_offset_horz + g_vertex_offset_vert));
+
+            //All normal lines are rendered as 3d tubes.
+            // apx 1 segment per 20 degrees
+            float length = length(gl_in[1].gl_Position.xy - gl_in[0].gl_Position.xy);
+            int nSegments = max(int(length/1), 1); // slanted vs straight
+            //int nSegments = 5;
+            for (int i = 1; i <= nSegments; i++)
+            {
+                float start_delta = (1.0/nSegments)*float(i-1);
+                float delta = (1.0/nSegments)*float(i);
+                vec3 arc_vertex[];
+                arc_vertex[0] = v_vertex[0].xyz;
+                arc_vertex[1] = v_vertex[1].xyz;
+
+                vec4 cyl_axis = vec4(0.0,0.0,0.0,0.0);
+                vec4 arc_pos[];
+                // arc_pos points are CARTESIAN points converted from the original cylindrical points
+                arc_pos[1] = toArc(mix(gl_in[0].gl_Position - cyl_axis, gl_in[1].gl_Position - cyl_axis, delta));
+                arc_pos[0] = toArc(mix(gl_in[0].gl_Position - cyl_axis, gl_in[1].gl_Position - cyl_axis, start_delta));
+                vec4 arc_vertex_delta = arc_pos[1] - arc_pos[0];
+
+                // size_x still expects a linear mm distance, but it has to be converted into drum surface distance
+                size_x = (v_line_dim[1].x * (10 / (gl_in[0].gl_Position.y + 12.70)) / 2) + 0.01;
+
+                // arc_vertex_delta should be tangent to the drum surface, find the normal and bitangent
+                //vec3 arc_vertex_normal = normalize(cross(arc_vertex_delta.xzy, vec3(0.0,0.0,1.0)));
+                //vec3 arc_vertex_bitan = normalize(cross(arc_vertex_delta.yxz, arc_vertex_normal));
+
+                //vec3 arc_vertex_normal = normalize(cross(arc_vertex_delta.xyz, vec3(0,0,1)));
+                //vec3 arc_vertex_bitan = normalize(cross(arc_vertex_delta.xyz, arc_vertex_normal));
+
+                float z_dir = 1;
+                if ( arc_vertex_delta.z > 0 )
+                    z_dir = -z_dir;
+                vec3 arc_vertex_normal = normalize(cross(arc_vertex_delta.xyz, vec3(0,0,1)) * z_dir);
+                vec3 arc_vertex_bitan = normalize(cross(arc_vertex_normal, arc_vertex_delta.xyz) * z_dir);
+                // the original swizzle only horz normal does some interesting stuff
+                //vec3(arc_vertex_delta.z, arc_vertex_delta.y, arc_vertex_delta.x) * z_dir;
+
+                
+                vec4 arc_vertex_offset_normal = normalize(vec4( arc_vertex_normal, 0)) * size_y;
+                vec4 arc_vertex_offset_bitan = normalize(vec4(arc_vertex_bitan,0.0)) * size_x;
+
+                vec4 final_pos[];
+                final_pos[0] = u_viewProjectionMatrix * (arc_pos[0] - arc_vertex_offset_bitan );
+                final_pos[1] = u_viewProjectionMatrix * (arc_pos[1] - arc_vertex_offset_bitan);
+                final_pos[2] = u_viewProjectionMatrix * (arc_pos[0]  + arc_vertex_offset_normal);
+                final_pos[3] = u_viewProjectionMatrix * (arc_pos[1] + arc_vertex_offset_normal);
+
+                final_pos[4] = u_viewProjectionMatrix * (arc_pos[0] + arc_vertex_offset_bitan);
+                final_pos[5] = u_viewProjectionMatrix * (arc_pos[1] + arc_vertex_offset_bitan);
+                final_pos[6] = u_viewProjectionMatrix * (arc_pos[0]  - arc_vertex_offset_normal);
+                final_pos[7] = u_viewProjectionMatrix * (arc_pos[1] - arc_vertex_offset_normal);
+                final_pos[8] = u_viewProjectionMatrix * (arc_pos[0] - arc_vertex_offset_bitan);
+                final_pos[9] = u_viewProjectionMatrix * (arc_pos[1] - arc_vertex_offset_bitan);
+
+                //left side
+                myEmitVertex(arc_vertex[0], v_color[0], -arc_vertex_bitan, final_pos[0] );
+                myEmitVertex(arc_vertex[1], v_color[1], -arc_vertex_bitan, final_pos[1] );
+
+                //normal is green, top side
+                myEmitVertex(arc_vertex[0], v_color[0], arc_vertex_normal, final_pos[2] );
+                myEmitVertex(arc_vertex[1], v_color[0], arc_vertex_normal, final_pos[3]  );
+
+                //bitangent is red, right side
+                myEmitVertex(arc_vertex[0], v_color[0], arc_vertex_bitan, final_pos[4]);
+                myEmitVertex(arc_vertex[1], v_color[0], arc_vertex_bitan, final_pos[5]);
+
+                //bottom
+                myEmitVertex(arc_vertex[0], v_color[0], -arc_vertex_normal, final_pos[6]);
+                myEmitVertex(arc_vertex[1], v_color[1], -arc_vertex_normal, final_pos[7]);
+
+                //close the shape (left side again)
+                myEmitVertex(arc_vertex[0], v_color[0], -arc_vertex_bitan, final_pos[8]);
+                myEmitVertex(arc_vertex[1], v_color[1], -arc_vertex_bitan, final_pos[9]);
+                
+                EndPrimitive();
+            }
 
             EndPrimitive();
         } else {
