@@ -87,11 +87,11 @@ class Arrange:
     #   \param node
     #   \param offset_shape_arr ShapeArray with offset, for placing the shape
     #   \param hull_shape_arr ShapeArray without offset, used to find location
-    def findNodePlacement(self, node: SceneNode, offset_shape_arr: ShapeArray, hull_shape_arr: ShapeArray, step = 1):
+    def findNodePlacement(self, node: SceneNode, offset_shape_arr: ShapeArray, hull_shape_arr: ShapeArray, step = 1,go_below_bed = False):
         best_spot = self.bestSpot(
             hull_shape_arr, start_prio = self._last_priority, step = step)
         x, y = best_spot.x, best_spot.y
-
+        z = 0
         # Save the last priority.
         self._last_priority = best_spot.priority
 
@@ -99,12 +99,19 @@ class Arrange:
         node.removeDecorator(ZOffsetDecorator.ZOffsetDecorator)
         bbox = node.getBoundingBox()
         if bbox:
+            if(go_below_bed):
+                z = bbox.bottom
+                y = y - bbox.depth/2.0
+            
             center_y = node.getWorldPosition().y - bbox.bottom
         else:
             center_y = 0
 
         if x is not None:  # We could find a place
-            node.setPosition(Vector(x, center_y, y))
+            if(go_below_bed):
+                node.setPosition(Vector(x,z,y))
+            else:
+                node.setPosition(Vector(x, center_y, y))
             found_spot = True
             self.place(x, y, offset_shape_arr)  # place the object in arranger
         else:
