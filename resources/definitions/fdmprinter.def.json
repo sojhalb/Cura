@@ -5472,7 +5472,7 @@
                     "unit": "mm",
                     "type": "float",
                     "minimum_value": "0",
-                    "default_value": 30,
+                    "default_value": 0,
                     "enabled": "cyl_slicing_enabled",
                     "settable_per_mesh": false,
                     "settable_per_extruder": false
@@ -5484,7 +5484,7 @@
                     "unit": "mm",
                     "type": "float",
                     "minimum_value": "0",
-                    "default_value": 30,
+                    "default_value": 0,
                     "enabled": "cyl_slicing_enabled",
                     "settable_per_mesh": false,
                     "settable_per_extruder": false
@@ -5496,7 +5496,7 @@
                     "unit": "mm",
                     "type": "float",
                     "minimum_value": "0",
-                    "default_value": 22.040,
+                    "default_value": 12.7,
                     "enabled": "cyl_slicing_enabled",
                     "settable_per_mesh": false,
                     "settable_per_extruder": false
@@ -5505,7 +5505,7 @@
                 {
                     "label": "Seam front",
                     "description": "Set the radius of the drum to use in cylindrical slicing",
-                    "unit": "um",
+                    "unit": "drad",
                     "type": "float",
                     "minimum_value": "0",
                     "default_value": 16907,
@@ -5517,7 +5517,7 @@
                 {
                     "label": "Seam Back",
                     "description": "Set the radius of the drum to use in cylindrical slicing",
-                    "unit": "um",
+                    "unit": "drad",
                     "type": "float",
                     "minimum_value": "0",
                     "default_value": 46123,
@@ -5532,6 +5532,15 @@
                     "type": "bool",
                     "default_value": false,
                     "enabled": "cyl_slicing_enabled",
+                    "settable_per_mesh": false,
+                    "settable_per_extruder": false
+                },
+                "alternate_nylon_and_fiber":
+                {
+                    "label": "Alternate Nylon and Fiber",
+                    "description": "Crudely switch infill between nylon and fiber",
+                    "type": "bool",
+                    "default_value": false,
                     "settable_per_mesh": false,
                     "settable_per_extruder": false
                 },
